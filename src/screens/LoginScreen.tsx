@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import usersData from '../data/users.json'
@@ -15,9 +15,10 @@ const LoginScreen = ({ navigation }) => {
     const userExists = usersData.users.some((user) => user.username === username);
     
     if (userExists) {
-      navigation.navigate('Welcome');
+      Alert.alert('Autenticado com sucesso.');
+      navigation.navigate('Books');
     } else {
-      alert('Este nome de usuário não existe.');
+      Alert.alert('Este nome de usuário não existe.');
       return;
     }
 
