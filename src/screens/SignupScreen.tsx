@@ -1,14 +1,34 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import usersData from '../data/users.json'
 
-
-const SignupScreen = () => {
+const SignupScreen = ({navigation}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSignup = () => {
+        // verifica se o nome de usuário já existe
+        const userExists = usersData.users.some((user) => user.username === username);
+        if (userExists) {
+            alert('Este nome de usuário já está em uso.');
+            return;
+        }
+
+        // adiciona o novo usuário ao arquivo JSON
+        const newUser = {
+            username: username,
+            password: password,
+        };
+        usersData.users.push(newUser);
+
+        // redireciona para a tela de login
+        // você precisa implementar a navegação para a tela de login
+        // aqui você pode usar a biblioteca de navegação que estiver usando
+        // por exemplo, o React Navigation
+        navigation.navigate('Login');
+
         console.log(`Username: ${username}, Password: ${password}, Confirm Password: ${confirmPassword}`);
     };
 

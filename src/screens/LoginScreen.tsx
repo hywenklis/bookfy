@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
+import usersData from '../data/users.json'
+
 
 
 const LoginScreen = ({ navigation }) => {
@@ -9,6 +11,17 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    
+    const userExists = usersData.users.some((user) => user.username === username);
+    
+    if (userExists) {
+      navigation.navigate('Welcome');
+    } else {
+      alert('Este nome de usuário não existe.');
+      return;
+    }
+
+
     console.log(`Username: ${username}, Password: ${password}`);
   };
 
