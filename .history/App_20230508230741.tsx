@@ -16,9 +16,9 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Signup"
+          name="SignupScreen"
           component={SignupScreen}
-          options={{ headerShown: false }}
+          options={{ title: 'Sign Up' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

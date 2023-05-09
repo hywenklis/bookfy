@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
         <MaterialIcons name="lock" size={24} color="black" />
         <TextInput
           style={styles.input}
-          placeholder="Senha"
+          placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={styles.createAccountContainer}>
         <Text style={styles.createAccountText}>Não possui conta?</Text>

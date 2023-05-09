@@ -14,22 +14,22 @@ const App = () => {
           name="LoginScreen"
           component={LoginScreen}
           options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Signup"
+          />
+          <Stack.Screen
+          name="SignupScreen"
           component={SignupScreen}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
-
-export default App;
-
-
-
-
-
-
-
+          options={{ title: 'Sign Up' }}
+          />
+          </Stack.Navigator>
+          </NavigationContainer>
+          );
+          };
+          
+          export default App;
+          
+          
+          
+          
+          
+          
+          

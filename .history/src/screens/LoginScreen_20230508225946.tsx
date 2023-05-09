@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { StyleSheet, View, Text } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 
-
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     console.log(`Username: ${username}, Password: ${password}`);
-  };
-
-  const handleCreateAccount = () => {
-    navigation.navigate('Signup');
   };
 
   return (
@@ -23,7 +18,7 @@ const LoginScreen = ({ navigation }) => {
         <MaterialIcons name="person" size={24} color="black" />
         <TextInput
           style={styles.input}
-          placeholder="Usuário"
+          placeholder="Username"
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
@@ -34,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
         <MaterialIcons name="lock" size={24} color="black" />
         <TextInput
           style={styles.input}
-          placeholder="Senha"
+          placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
@@ -42,14 +37,8 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <View style={styles.createAccountContainer}>
-        <Text style={styles.createAccountText}>Não possui conta?</Text>
-        <TouchableOpacity onPress={handleCreateAccount}>
-          <Text style={styles.createAccountLink}>Criar conta.</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -84,30 +73,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button: {
-    width: '100%',
+    width: 350,
     height: 50,
     backgroundColor: '#1e90ff',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
   },
   buttonText: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  createAccountContainer: {
-    flexDirection: 'row',
-  },
-  createAccountText: {
-    marginRight: 5,
-    color: '#000000',
-    fontSize: 16,
-  },
-  createAccountLink: {
-    color: '#1e90ff',
-    fontSize: 16,
   },
 });
 

@@ -20,6 +20,7 @@ const App = () => {
           component={SignupScreen}
           options={{ headerShown: false }}
         />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

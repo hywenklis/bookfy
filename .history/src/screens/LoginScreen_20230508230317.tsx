@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 
-
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +12,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleCreateAccount = () => {
-    navigation.navigate('Signup');
+    navigation.navigate('Cadastro');
   };
 
   return (
@@ -23,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
         <MaterialIcons name="person" size={24} color="black" />
         <TextInput
           style={styles.input}
-          placeholder="Usuário"
+          placeholder="Username"
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
@@ -34,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
         <MaterialIcons name="lock" size={24} color="black" />
         <TextInput
           style={styles.input}
-          placeholder="Senha"
+          placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
@@ -42,7 +41,7 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={styles.createAccountContainer}>
         <Text style={styles.createAccountText}>Não possui conta?</Text>

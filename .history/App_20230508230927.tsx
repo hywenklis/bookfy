@@ -16,10 +16,11 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Signup"
-          component={SignupScreen}
-          options={{ headerShown: false }}
-        />
+  name="Signup"
+  component={SignupScreen}
+  options={{ headerShown: false }}
+/>
+
       </Stack.Navigator>
     </NavigationContainer>
   );
