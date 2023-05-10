@@ -29,8 +29,6 @@ const SignupScreen = ({navigation}) => {
         // por exemplo, o React Navigation
         Alert.alert('Cadastrado com sucesso!.');
         navigation.navigate('Login');
-
-        console.log(`Username: ${username}, Password: ${password}, Confirm Password: ${confirmPassword}`);
     };
 
     return (

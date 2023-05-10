@@ -21,9 +21,6 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert('Este nome de usuário não existe.');
       return;
     }
-
-
-    console.log(`Username: ${username}, Password: ${password}`);
   };
 
   const handleCreateAccount = () => {
