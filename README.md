@@ -20,4 +20,9 @@
 # Telas
 
 1. Tela de splash:
-<img src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela1-splash.jpeg" alt="Tela de splash">
+<div align="center">
+<img 
+src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela1-splash.jpeg" 
+alt="Tela de splash" 
+width="250px" /> 
+</div>
