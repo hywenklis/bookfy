@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    TouchableOpacity,
+    TextInput
+} from 'react-native';
 import moment from 'moment';
 import books from '../data/books.json';
 
@@ -50,32 +56,33 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
         const hours = Math.floor(diff.asHours() - days * 24);
         const minutes = Math.floor(diff.asMinutes() - days * 24 * 60 - hours * 60);
 
-        return `${days} dias, ${hours} horas e ${minutes} minutos`;
+        return `${days}d ${hours}h ${minutes}m`;
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{book.title}</Text>
             {isAvailable ? (
-                <View>
-                    <Text>O livro está disponível para empréstimo.</Text>
+                <View style={styles.available}>
+                    <Text style={styles.availableText}>Disponível para empréstimo</Text>
                     <TextInput
                         style={styles.input}
                         value={duration.toString()}
                         onChangeText={setDuration}
-                        placeholder="Duração do empréstimo em dias"
+                        placeholder="Duração do empréstimo (em dias)"
                         keyboardType="numeric"
                     />
                     <TouchableOpacity style={styles.button} onPress={handleBorrow}>
-                        <Text style={styles.buttonText}>Emprestar</Text>
+                        <Text style={styles.buttonText}>EMPRESTAR</Text>
                     </TouchableOpacity>
                 </View>
             ) : (
-                <View>
-                    <Text>O livro está emprestado até {moment(returnDate).format('DD/MM/YYYY HH:mm:ss')}</Text>
-                    <Text>Você tem {getRemainingTime()} para devolver o livro.</Text>
+                <View style={styles.borrowed}>
+                    <Text style={styles.borrowedText}>EMPRESTADO</Text>
+                    <Text style={styles.dateText}>Data de devolução: {moment(returnDate).format('DD/MM/YYYY HH:mm:ss')}</Text>
+                    <Text style={styles.remainingText}>Tempo restante: {getRemainingTime()}</Text>
                     <TouchableOpacity style={styles.button} onPress={handleReturn}>
-                        <Text style={styles.buttonText}>Devolver</Text>
+                        <Text style={styles.buttonText}>DEVOLVER</Text>
                     </TouchableOpacity>
                 </View>
             )}
@@ -88,29 +95,54 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
+
+        backgroundColor: '#F5FCFF',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
     },
+    available: {
+        alignItems: 'center',
+    },
+    availableText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+    borrowed: {
+        alignItems: 'center',
+    },
+    borrowedText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+    dateText: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
+    remainingText: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
     input: {
-        borderWidth: 1,
+        height: 40,
         borderColor: 'gray',
-        padding: 10,
+        borderWidth: 1,
         borderRadius: 5,
+        width: '80%',
+        marginBottom: 20,
+        textAlign: 'center',
     },
     button: {
-        backgroundColor: 'blue',
+        backgroundColor: '#00bfff',
         padding: 10,
         borderRadius: 5,
-        marginTop: 20,
     },
     buttonText: {
-        color: 'white',
+        color: '#fff',
+        fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
     },
 });
 
