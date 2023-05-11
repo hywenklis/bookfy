@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-    Alert,
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import { Formik, FormikHelpers, Field } from 'formik';
