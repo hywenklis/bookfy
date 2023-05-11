@@ -19,7 +19,7 @@
 
 # Telas
 
-1. **Tela de Splash:**
+1. **Tela de Splash:** >a tela de abertura deve ser a primeira tela exibida quando o aplicativo é aberto. Geralmente, ela apresenta o logotipo do aplicativo e uma animação ou imagem para entreter o usuário enquanto o aplicativo é carregado.
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela1-splash.jpeg" 
@@ -44,7 +44,7 @@ alt="Tela de login-success"
 width="250px" />
 </div>
 
-3. **Tela de Signup:**
+3. **Tela de Signup:** 
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela3-signup-validation-formik.jpeg" 
