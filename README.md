@@ -19,7 +19,7 @@
 
 # Telas
 
-1. Tela de Splash:
+1. **Tela de Splash:**
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela1-splash.jpeg" 
@@ -27,7 +27,7 @@ alt="Tela de splash"
 width="250px" /> 
 </div>
 
-2. Tela de Login:
+2. **Tela de Login:**
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela2-login.jpeg" 
@@ -44,7 +44,7 @@ alt="Tela de login-success"
 width="250px" />
 </div>
 
-3. Tela de Signup:
+3. **Tela de Signup:**
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela3-signup-validation-formik.jpeg" 
@@ -61,7 +61,7 @@ alt="Tela de signup-validation-alert"
 width="250px" /> 
 </div>
 
-4. Tela de pesquisa do livro:
+4. **Tela de pesquisa do livro:**
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela4-searchBook.jpeg" 
@@ -69,7 +69,7 @@ alt="Tela de searchBook"
 width="250px" /> 
 </div>
 
-5. Tela para solicitar o emprestimo:
+5. **Tela para solicitar o emprestimo:**
 <div align="center">
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela5-bookDetails.jpeg" 
