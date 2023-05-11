@@ -1,0 +1,35 @@
+{
+    "books": [
+      {
+        "id": 1,
+        "title": "O Senhor dos Anéis",
+        "author": "J.R.R. Tolkien",
+        "description": "Trilogia épica de fantasia",
+        "borrowed": true,
+        "returnDate": "2023-05-20T20:30:00.000Z"
+      },
+      {
+        "id": 2,
+        "title": "Harry Potter e a Pedra Filosofal",
+        "author": "J.K. Rowling",
+        "description": "Livro de aventura e fantasia infantojuvenil",
+        "borrowed": false
+      },
+      {
+        "id": 3,
+        "title": "Dom Casmurro",
+        "author": "Machado de Assis",
+        "description": "Romance realista brasileiro",
+        "borrowed": true,
+        "returnDate": "2023-05-25T15:45:00.000Z"
+      },
+      {
+        "id": 4,
+        "title": "A Culpa é das Estrelas",
+        "author": "John Green",
+        "description": "Livro de romance e drama",
+        "borrowed": false
+      }
+    ]
+  }
+  

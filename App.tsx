@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import SearchScreen from './src/screens/SearchScreen'
+import BookDetailsScreen from './src/screens/BookDetailsScreen';
 
 const Stack = createStackNavigator();
 
@@ -26,11 +27,15 @@ const App = () => {
           component={SearchScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="BookDetails"
+          component={BookDetailsScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
 export default App;
 
 
