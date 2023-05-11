@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React from 'react';
+import {
+    StyleSheet,
+    View,
+    Text,
+    TouchableOpacity,
+    Alert,
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { TextInput } from 'react-native-gesture-handler';
+import { Formik, FormikHelpers, Field } from 'formik';
+import * as Yup from 'yup';
 import usersData from '../data/users.json';
 
-interface Props {
+type SignupScreenProps = {
     navigation: {
-        navigate: (arg0: string) => void;
+        navigate: (screen: string) => void;
     };
-}
+};
 
-const SignupScreen: React.FC<Props> = ({ navigation }) => {
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [confirmPassword, setConfirmPassword] = useState<string>('');
+type FormValues = {
+    username: string;
+    password: string;
+    confirmPassword: string;
+};
 
-    const handleSignup = () => {
+const LoginSchema = Yup.object().shape({
+    username: Yup.string().required('Campo obrigatório'),
+    password: Yup.string().required('Campo obrigatório'),
+    confirmPassword: Yup.string()
+        .required('Campo obrigatório')
+        .oneOf([Yup.ref('password')], 'As senhas não coincidem'),
+});
+
+const SignupScreen = ({ navigation }: SignupScreenProps) => {
+    const handleSignup = (values: FormValues, { resetForm }: FormikHelpers<FormValues>) => {
         // verifica se o nome de usuário já existe
-        const userExists = usersData.users.some((user: { username: string }) => user.username === username);
+        const userExists = usersData.users.some(
+            (user: { username: string }) => user.username === values.username
+        );
         if (userExists) {
             Alert.alert('Este nome de usuário já está em uso.');
             return;
@@ -24,59 +45,96 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
 
         // adiciona o novo usuário ao arquivo JSON
         const newUser = {
-            username: username,
-            password: password,
+            username: values.username,
+            password: values.password,
         };
         usersData.users.push(newUser);
 
         // redireciona para a tela de login
-        // você precisa implementar a navegação para a tela de login
-        // aqui você pode usar a biblioteca de navegação que estiver usando
-        // por exemplo, o React Navigation
         Alert.alert('Cadastrado com sucesso!.');
+        resetForm();
         navigation.navigate('Login');
     };
 
+    const handleLoginAccount = () => {
+        navigation.navigate('Login');
+      };
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Crie sua conta</Text>
-            <View style={styles.inputContainer}>
-                <MaterialIcons name="person" size={24} color="black" />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Usuário"
-                    value={username}
-                    onChangeText={setUsername}
-                    autoCapitalize="none"
-                    textContentType="username"
-                />
-            </View>
-            <View style={styles.inputContainer}>
-                <MaterialIcons name="lock" size={24} color="black" />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Senha"
-                    secureTextEntry
-                    value={password}
-                    onChangeText={setPassword}
-                    textContentType="password"
-                />
-            </View>
-            <View style={styles.inputContainer}>
-                <MaterialIcons name="lock" size={24} color="black" />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Confirme sua Senha"
-                    secureTextEntry
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    textContentType="password"
-                />
-            </View>
-            <TouchableOpacity style={styles.button} onPress={handleSignup}>
-                <Text style={styles.buttonText}>Cadastrar</Text>
-            </TouchableOpacity>
-        </View>
+        <Formik
+            initialValues={{ username: '', password: '', confirmPassword: '' }}
+            validationSchema={LoginSchema}
+            onSubmit={handleSignup}
+        >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                <View style={styles.container}>
+                    <Text style={styles.title}>Crie sua conta</Text>
+                    <View style={styles.form}>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="person" size={24} color="#c4c4c4" style={styles.inputIcon} />
+                            <Field
+                                component={TextInput}
+                                style={styles.input}
+                                placeholder="Usuário"
+                                name="username"
+                                onChangeText={handleChange('username')}
+                                onBlur={handleBlur('username')}
+                                value={values.username}
+                                autoCapitalize="none"
+                                textContentType="username"
+                            />
+                        </View>
+                        {touched.username && errors.username && (
+                            <Text style={styles.errorText}>{errors.username}</Text>
+                        )}
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
+                            <Field
+                                component={TextInput}
+                                style={styles.input}
+                                placeholder="Senha"
+                                name="password"
+                                onChangeText={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                value={values.password}
+                                textContentType="password"
+                                secureTextEntry
+                            />
+                        </View>
+                        {touched.password && errors.password && (
+                            <Text style={styles.errorText}>{errors.password}</Text>
+                        )}
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
+                            <Field
+                                component={TextInput}
+                                style={styles.input}
+                                placeholder="Confirme sua Senha"
+                                name="confirmPassword"
+                                onChangeText={handleChange('confirmPassword')}
+                                onBlur={handleBlur('confirmPassword')}
+                                value={values.confirmPassword}
+                                textContentType="password"
+                                secureTextEntry
+                            />
+                        </View>
+                        {touched.confirmPassword && errors.confirmPassword && (
+                            <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+                        )}
+                        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                            <Text style={styles.buttonText}>Cadastrar</Text>
+                        </TouchableOpacity>
+                        <View style={styles.loginAccountContainer}>
+                            <Text style={styles.loginAccountText}>Já possui conta?</Text>
+                            <TouchableOpacity onPress={handleLoginAccount}>
+                                <Text style={styles.loginAccountLink}>Clique aqui para entrar.</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            )
+            }
+        </Formik >
     );
 };
 
@@ -86,41 +144,68 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#ffffff',
-        padding: 20,
     },
     title: {
-        fontSize: 32,
+        fontFamily: 'Roboto',
+        fontSize: 36,
         fontWeight: 'bold',
         marginBottom: 50,
+    },
+
+    form: {
+        width: '80%',
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%',
-        height: 50,
         borderWidth: 1,
-        borderColor: '#cccccc',
         borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         marginBottom: 20,
-        paddingHorizontal: 10,
+        borderColor: '#c4c4c4',
+    },
+    inputIcon: {
+        marginRight: 10,
     },
     input: {
         flex: 1,
-        height: '100%',
-        marginLeft: 10,
+        fontSize: 16,
+        fontFamily: 'Roboto',
     },
     button: {
-        width: 350,
-        height: 50,
-        backgroundColor: '#1e90ff',
+        backgroundColor: '#45b3e0',
         borderRadius: 10,
+        paddingVertical: 15,
         alignItems: 'center',
-        justifyContent: 'center',
+        marginBottom: 20,
     },
     buttonText: {
         color: '#ffffff',
+        fontFamily: 'Roboto',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    loginAccountContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loginAccountText: {
+        fontFamily: 'Roboto',
+        fontSize: 14,
+        marginRight: 5,
+    },
+    loginAccountLink: {
+        fontFamily: 'Roboto',
+        fontSize: 14,
+        color: '#45b3e0',
+    },
+    errorText: {
+        fontFamily: 'Roboto',
+        fontSize: 14,
+        color: 'red',
+        marginBottom: 10,
     },
 });
 
