@@ -3,29 +3,44 @@ import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-nativ
 import moment from 'moment';
 import books from '../data/books.json';
 
-const BookDetailsScreen = ({ route, navigation }) => {
+type BookDetailsScreenProps = {
+    route: {
+        params: {
+            book: {
+                id: string;
+                title: string;
+                author: string;
+                borrowed: boolean;
+                returnDate: string;
+            };
+        };
+    };
+    navigation: any;
+};
+
+const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation }) => {
     const { book } = route.params;
-    const currentBook = books.find(b => b.id === book.id);
+    const currentBook = books.find((b) => b.id === book.id)!;
     const [isAvailable, setIsAvailable] = useState(!currentBook.borrowed);
-    const [returnDate, setReturnDate] = useState(moment(currentBook.returnDate).toDate());
+    const [returnDate, setReturnDate] = useState<Date>(moment(currentBook.returnDate).toDate());
     const remainingTime = moment(currentBook.returnDate).diff(moment());
     const remainingDays = moment.duration(remainingTime).asDays();
-    const [duration, setDuration] = useState(Math.ceil(remainingDays));
+    const [duration, setDuration] = useState<number>(Math.ceil(remainingDays));
 
     const handleBorrow = () => {
         setIsAvailable(false);
         const newReturnDate = moment().add(duration, 'days').toDate();
-        setReturnDate(newReturnDate);
         currentBook.borrowed = true;
         currentBook.returnDate = newReturnDate;
+        setReturnDate(newReturnDate);
     };
 
     const handleReturn = () => {
-        const newDate = moment().add(duration, 'days').toDate()
+        const newDate = moment().add(duration, 'days').toDate();
         setIsAvailable(true);
         currentBook.borrowed = false;
         currentBook.returnDate = newDate;
-        setDuration('');
+        setDuration(0);
     };
 
     const getRemainingTime = () => {
@@ -49,6 +64,7 @@ const BookDetailsScreen = ({ route, navigation }) => {
                         value={duration.toString()}
                         onChangeText={setDuration}
                         placeholder="Duração do empréstimo em dias"
+                        keyboardType="numeric"
                     />
                     <TouchableOpacity style={styles.button} onPress={handleBorrow}>
                         <Text style={styles.buttonText}>Emprestar</Text>
@@ -84,21 +100,18 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         padding: 10,
         borderRadius: 5,
-        marginBottom: 10,
-        alignSelf: 'stretch',
     },
     button: {
-        backgroundColor: '#2196F3',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        backgroundColor: 'blue',
+        padding: 10,
         borderRadius: 5,
-        alignSelf: 'center',
-        marginTop: 10,
+        marginTop: 20,
     },
     buttonText: {
-        color: '#fff',
+        color: 'white',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 
-export default BookDetailsScreen;    
+export default BookDetailsScreen;

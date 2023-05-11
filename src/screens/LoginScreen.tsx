@@ -4,16 +4,18 @@ import { TextInput } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import usersData from '../data/users.json'
 
+type LoginScreenProps = {
+  navigation: any;
+};
 
-
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginScreen = ({ navigation }: LoginScreenProps) => {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   const handleLogin = () => {
-    
-    const userExists = usersData.users.some((user) => user.username === username);
-    
+
+    const userExists = usersData.users.some((user: { username: string }) => user.username === username);
+
     if (userExists) {
       Alert.alert('Autenticado com sucesso.');
       navigation.navigate('Books');

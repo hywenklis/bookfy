@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import usersData from '../data/users.json'
+import usersData from '../data/users.json';
 
-const SignupScreen = ({navigation}) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+interface Props {
+    navigation: {
+        navigate: (arg0: string) => void;
+    };
+}
+
+const SignupScreen: React.FC<Props> = ({ navigation }) => {
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
 
     const handleSignup = () => {
         // verifica se o nome de usuário já existe
-        const userExists = usersData.users.some((user) => user.username === username);
+        const userExists = usersData.users.some((user: { username: string }) => user.username === username);
         if (userExists) {
             Alert.alert('Este nome de usuário já está em uso.');
             return;

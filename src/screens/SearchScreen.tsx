@@ -1,20 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, FlatList, Text, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
-const SearchScreen = ({ navigation }) => {
-    const [books, setBooks] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(false);
+interface Book {
+    id: number;
+    title: string;
+    author: string;
+    categories: string[];
+    image: any;
+}
+
+interface SearchScreenProps {
+    navigation: any;
+}
+
+const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
+    const [books, setBooks] = useState<Book[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         setBooks([
-            { id: 1, title: 'O Hobbit', author: 'J. R. R. Tolkien', categories: ['Fantasia', 'Aventura'], image: require('../../assets/images/livro1.jpg') },
-            { id: 2, title: 'O Senhor dos Anéis', author: 'J. R. R. Tolkien', categories: ['Fantasia', 'Aventura'], image: require('../../assets/images/livro2.jpg') },
-            { id: 3, title: 'Harry Potter e a Pedra Filosofal', author: 'J. K. Rowling', categories: ['Fantasia', 'Aventura'], image: require('../../assets/images/livro3.jpg') },
-            { id: 4, title: 'O Guia do Mochileiro das Galáxias', author: 'Douglas Adams', categories: ['Ficção científica', 'Humor'], image: require('../../assets/images/livro4.jpg') },
-            { id: 5, title: 'Fundação', author: 'Isaac Asimov', categories: ['Ficção científica'], image: require('../../assets/images/livro5.jpg') },
-            { id: 6, title: '1984', author: 'George Orwell', categories: ['Ficção distópica'], image: require('../../assets/images/livro6.jpg') },
-            { id: 7, title: 'O Processo', author: 'Franz Kafka', categories: ['Ficção', 'Drama'], image: require('../../assets/images/livro7.jpg') },
+            {
+                id: 1,
+                title: 'O Hobbit',
+                author: 'J. R. R. Tolkien',
+                categories: ['Fantasia', 'Aventura'],
+                image: require('../../assets/images/livro1.jpg'),
+            },
+            {
+                id: 2,
+                title: 'O Senhor dos Anéis',
+                author: 'J. R. R. Tolkien',
+                categories: ['Fantasia', 'Aventura'],
+                image: require('../../assets/images/livro2.jpg'),
+            },
+            {
+                id: 3,
+                title: 'Harry Potter e a Pedra Filosofal',
+                author: 'J. K. Rowling',
+                categories: ['Fantasia', 'Aventura'],
+                image: require('../../assets/images/livro3.jpg'),
+            },
+            {
+                id: 4,
+                title: 'O Guia do Mochileiro das Galáxias',
+                author: 'Douglas Adams',
+                categories: ['Ficção científica', 'Humor'],
+                image: require('../../assets/images/livro4.jpg'),
+            },
+            {
+                id: 5,
+                title: 'Fundação',
+                author: 'Isaac Asimov',
+                categories: ['Ficção científica'],
+                image: require('../../assets/images/livro5.jpg'),
+            },
+            {
+                id: 6,
+                title: '1984',
+                author: 'George Orwell',
+                categories: ['Ficção distópica'],
+                image: require('../../assets/images/livro6.jpg'),
+            },
+            {
+                id: 7,
+                title: 'O Processo',
+                author: 'Franz Kafka',
+                categories: ['Ficção', 'Drama'],
+                image: require('../../assets/images/livro7.jpg'),
+            },
         ]);
     }, []);
 
@@ -28,11 +91,11 @@ const SearchScreen = ({ navigation }) => {
 
     const renderBookItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.bookItem} onPress={() => handleBookPress(item)}>
+            <TouchableOpacity onPress={() => handleBookPress(item)}>
                 <View style={styles.imageContainer}>
                     <Image source={item.image} style={styles.bookImage} resizeMode='contain' />
                 </View>
-                <View style={styles.bookInfoContainer}>
+                <View >
                     <Text style={styles.bookTitle}>{item.title}</Text>
                     <Text style={styles.bookAuthor}>{item.author}</Text>
                     <Text style={styles.bookCategory}>{item.categories.join(', ')}</Text>
@@ -40,7 +103,6 @@ const SearchScreen = ({ navigation }) => {
             </TouchableOpacity>
         );
     };
-    
 
     const handleSearchInput = (text: string) => {
         setSearchTerm(text);
@@ -113,23 +175,23 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 5,
-      },
-      bookAuthor: {
+    },
+    bookAuthor: {
         position: 'absolute',
         top: -70,
         left: 100,
         right: 10,
         fontSize: 14,
         color: '#777',
-      },
-      bookCategory: {
+    },
+    bookCategory: {
         top: -50,
         left: 100,
         right: 10,
         fontSize: 14,
         color: '#EEE8AA',
-      },
-      
+    },
+
     loading: {
         flex: 1,
         justifyContent: 'center',
