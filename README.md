@@ -32,19 +32,13 @@ width="250px" />
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela2-login.jpeg" 
 alt="Tela de login" 
-width="250px" /> 
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela2-login-validation-formik.jpeg" 
 alt="Tela de login-validation-formik" 
-width="250px" />
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela2-login-validation-alert.jpeg" 
 alt="Tela de login-validation-alert" 
-width="250px" />
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela2-login-success.jpeg" 
 alt="Tela de login-success" 
 width="250px" />
@@ -55,19 +49,13 @@ width="250px" />
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela3-signup-validation-formik.jpeg" 
 alt="Tela de signup-validation-formik" 
-width="250px" /> 
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela3-signup-validation-formik-confirmPassword.jpeg" 
 alt="Tela de signup-validation-formik-confirmPassword" 
-width="250px" /> 
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela3-signup-validation-alert.jpeg" 
 alt="Tela de signup-validation-alert" 
-width="250px" /> 
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela3-signup-success.jpeg" 
 alt="Tela de signup-validation-alert" 
 width="250px" /> 
@@ -86,9 +74,7 @@ width="250px" />
 <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela5-bookDetails.jpeg" 
 alt="Tela de bookDetails" 
-width="250px" /> 
-
-<img 
+width="250px" /> <img 
 src="https://github.com/hywenklis/bookfy/blob/main/assets/images/presentation/tela5-bookDetails-loan.jpeg" 
 alt="Tela de bookDetails-loan" 
 width="250px" /> 
