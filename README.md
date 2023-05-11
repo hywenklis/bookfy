@@ -16,3 +16,8 @@
 4. Inicie o servidor com Expo: ```expo start```
 5. Instale o aplicativo Expo em seu dispositivo móvel a partir da **Google Play** Store para dispositivos Android ou da **App Store** para dispositivos iOS.
 6. Escaneie o código QR exibido no seu terminal ou no **localhost:19002** usando o aplicativo Expo em seu dispositivo móvel para iniciar o aplicativo Bookfy.
+
+# Telas
+
+1. Tela de splash:
+<img src="../../assets/images/presentation/tela1-splash.jpg" alt="Tela de splash">
