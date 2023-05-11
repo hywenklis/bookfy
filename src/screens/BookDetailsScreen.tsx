@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-    TextInput
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 import moment from 'moment';
 import books from '../data/books.json';
 
