@@ -1,39 +1,39 @@
 [
-    {
-        "id": 1,
-        "userId": "joao",
-        "borrowed": true,
-        "returnDate": "2023-05-20T20:30:00.000Z"
-    },
-    {
-        "id": 2,
-        "userId": "",
-        "borrowed": false
-    },
-    {
-        "id": 3,
-        "userId": "",
-        "borrowed": true,
-        "returnDate": "2023-05-25T15:45:00.000Z"
-    },
-    {
-        "id": 4,
-        "userId": "",
-        "borrowed": false
-    },
-    {
-        "id": 5,
-        "userId": "",
-        "borrowed": false
-    },
-    {
-        "id": 6,
-        "userId": "",
-        "borrowed": false
-    },
-    {
-        "id": 7,
-        "userId": "",
-        "borrowed": false
-    }
+  {
+    "id": 1,
+    "userId": "joao",
+    "borrowed": true,
+    "returnDate": "2023-05-20T20:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "userId": "",
+    "borrowed": false
+  },
+  {
+    "id": 3,
+    "userId": "",
+    "borrowed": true,
+    "returnDate": "2023-05-25T15:45:00.000Z"
+  },
+  {
+    "id": 4,
+    "userId": "",
+    "borrowed": false
+  },
+  {
+    "id": 5,
+    "userId": "",
+    "borrowed": false
+  },
+  {
+    "id": 6,
+    "userId": "",
+    "borrowed": false
+  },
+  {
+    "id": 7,
+    "userId": "",
+    "borrowed": false
+  }
 ]
