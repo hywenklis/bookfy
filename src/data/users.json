@@ -1,22 +1,22 @@
 {
   "users": [
     {
-      "username": "joao",
+      "email": "joao",
       "password": "123456",
       "books": [1, 3]
     },
     {
-      "username": "maria",
+      "email": "maria",
       "password": "abcdef",
       "books": []
     },
     {
-      "username": "pedro",
+      "email": "pedro",
       "password": "qwerty",
       "books": []
     },
     {
-      "username": "hywenklis",
+      "email": "hywenklis",
       "password": "hywenklis",
       "books": []
     }
