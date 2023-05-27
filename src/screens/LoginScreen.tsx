@@ -33,20 +33,20 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 
   async function handleAuthentication() {
     const isBiometricEnrolled = await LocalAuthentication.isEnrolledAsync();
-  
+
     if (!isBiometricEnrolled) {
       return Alert.alert('Login', 'Nenhuma biometria encontrada. Por favor, cadastre no dispositivo.');
     }
-  
+
     const auth = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Login com Biometria',
       fallbackLabel: 'Biometria não reconhecida',
     });
-  
+
     if (auth.success) {
       const authInstance = getAuth();
       const user = authInstance.currentUser;
-  
+
       if (user) {
         setIsAuthenticated(true);
         Alert.alert('Autenticado com sucesso.');
@@ -56,7 +56,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       }
     }
   }
-  
+
 
   const handleCreateAccount = () => {
     navigation.navigate('Signup');
