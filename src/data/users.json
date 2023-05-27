@@ -1,16 +1,24 @@
 {
-    "users": [
-        {
-            "username": "joao",
-            "password": "123456"
-        },
-        {
-            "username": "maria",
-            "password": "abcdef"
-        },
-        {
-            "username": "pedro",
-            "password": "qwerty"
-        }
-    ]
+  "users": [
+    {
+      "username": "joao",
+      "password": "123456",
+      "books": [1, 3]
+    },
+    {
+      "username": "maria",
+      "password": "abcdef",
+      "books": []
+    },
+    {
+      "username": "pedro",
+      "password": "qwerty",
+      "books": []
+    },
+    {
+      "username": "hywenklis",
+      "password": "hywenklis",
+      "books": []
+    }
+  ]
 }

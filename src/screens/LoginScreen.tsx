@@ -1,9 +1,10 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
+import * as LocalAuthentication from 'expo-local-authentication';
 import usersData from '../data/users.json';
 
 type LoginScreenProps = {
@@ -16,17 +17,39 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginScreen = ({ navigation }: LoginScreenProps) => {
-  const handleLogin = ({ username, password }: { username: string, password: string }) => {
-    const userExists = usersData.users.some((user: { username: string }) => user.username === username);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    if (userExists) {
-      Alert.alert('Autenticado com sucesso.');
-      navigation.navigate('Books');
+  const handleLogin = async ({ username, password }: { username: string; password: string }) => {
+    const user = usersData.users.find(
+      (user: { username: string; password: string }) =>
+        user.username === username && user.password === password
+    );
+
+    if (user) {
+      await handleAuthentication();
     } else {
-      Alert.alert('Este nome de usuário não existe.');
-      return;
+      Alert.alert('Nome de usuário ou senha incorretos.');
     }
   };
+
+  async function handleAuthentication() {
+    const isBiometricEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+    if (!isBiometricEnrolled) {
+      return Alert.alert('Login', 'Nenhuma biometria encontrada. Por favor, cadastre no dispositivo.');
+    }
+
+    const auth = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Login com Biometria',
+      fallbackLabel: 'Biometria não reconhecida',
+    });
+
+    if (auth.success) {
+      setIsAuthenticated(true);
+      Alert.alert('Autenticado com sucesso.');
+      navigation.navigate('Books');
+    }
+  }
 
   const handleCreateAccount = () => {
     navigation.navigate('Signup');
@@ -56,9 +79,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                 textContentType="username"
               />
             </View>
-            {touched.username && errors.username && (
-              <Text style={styles.errorText}>{errors.username}</Text>
-            )}
+            {touched.username && errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
             <View style={styles.inputContainer}>
               <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
               <Field
@@ -73,10 +94,11 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                 secureTextEntry
               />
             </View>
-            {touched.password && errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit}
+            >
               <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
             <View style={styles.createAccountContainer}>
@@ -105,7 +127,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 50,
   },
-
   form: {
     width: '80%',
   },
