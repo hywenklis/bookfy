@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { getAuth, signInWithEmailAndPassword, User } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 type LoginScreenProps = {
   navigation: {

@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import livro1 from '../../assets/images/livro1.jpg';
+import livro2 from '../../assets/images/livro2.jpg';
+import livro3 from '../../assets/images/livro3.jpg';
+import livro4 from '../../assets/images/livro4.jpg';
+import livro5 from '../../assets/images/livro5.jpg';
+import livro6 from '../../assets/images/livro6.jpg';
+import livro7 from '../../assets/images/livro7.jpg';
 
 interface Book {
-    id: number;
+    id: string;
     title: string;
     author: string;
     categories: string[];
@@ -19,74 +27,73 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        setBooks([
-            {
-                id: 1,
-                title: 'O Hobbit',
-                author: 'J. R. R. Tolkien',
-                categories: ['Fantasia', 'Aventura'],
-                image: require('../../assets/images/livro1.jpg'),
-            },
-            {
-                id: 2,
-                title: 'O Senhor dos Anéis',
-                author: 'J. R. R. Tolkien',
-                categories: ['Fantasia', 'Aventura'],
-                image: require('../../assets/images/livro2.jpg'),
-            },
-            {
-                id: 3,
-                title: 'Harry Potter e a Pedra Filosofal',
-                author: 'J. K. Rowling',
-                categories: ['Fantasia', 'Aventura'],
-                image: require('../../assets/images/livro3.jpg'),
-            },
-            {
-                id: 4,
-                title: 'O Guia do Mochileiro das Galáxias',
-                author: 'Douglas Adams',
-                categories: ['Ficção científica', 'Humor'],
-                image: require('../../assets/images/livro4.jpg'),
-            },
-            {
-                id: 5,
-                title: 'Fundação',
-                author: 'Isaac Asimov',
-                categories: ['Ficção científica'],
-                image: require('../../assets/images/livro5.jpg'),
-            },
-            {
-                id: 6,
-                title: '1984',
-                author: 'George Orwell',
-                categories: ['Ficção distópica'],
-                image: require('../../assets/images/livro6.jpg'),
-            },
-            {
-                id: 7,
-                title: 'O Processo',
-                author: 'Franz Kafka',
-                categories: ['Ficção', 'Drama'],
-                image: require('../../assets/images/livro7.jpg'),
-            },
-        ]);
+        const fetchBooks = async () => {
+            try {
+                const db = getFirestore();
+                const querySnapshot = await getDocs(collection(db, 'books'));
+                const fetchedBooks = querySnapshot.docs.map((doc) => {
+                    const data = doc.data();
+                    const book: Book = {
+                        id: doc.id,
+                        title: data.title,
+                        author: data.author,
+                        categories: data.categories,
+                        image: '',
+                    };
+
+                    // Mapear a imagem com base nos dados do livro
+                    switch (book.title) {
+                        case 'O Hobbit':
+                            book.image = livro1;
+                            break;
+                        case 'O Senhor dos Anéis':
+                            book.image = livro2;
+                            break;
+                        case 'Harry Potter e a Pedra Filosofal':
+                            book.image = livro3;
+                            break;
+                        case 'O Guia do Mochileiro das Galáxias':
+                            book.image = livro4;
+                            break;
+                        case 'Fundação':
+                            book.image = livro5;
+                            break;
+                        case '1984':
+                            book.image = livro6;
+                            break;
+                        case 'O Processo':
+                            book.image = livro7;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    return book;
+                });
+                setBooks(fetchedBooks);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        };
+
+        fetchBooks();
     }, []);
 
     const handleSearch = () => {
         console.log(`Pesquisando por: ${searchTerm}`);
     };
 
-    const handleBookPress = (book) => {
+    const handleBookPress = (book: Book) => {
         navigation.navigate('BookDetails', { book });
     };
 
-    const renderBookItem = ({ item }) => {
+    const renderBookItem = ({ item }: { item: Book }) => {
         return (
             <TouchableOpacity onPress={() => handleBookPress(item)}>
                 <View style={styles.imageContainer}>
                     <Image source={item.image} style={styles.bookImage} resizeMode='contain' />
                 </View>
-                <View >
+                <View>
                     <Text style={styles.bookTitle}>{item.title}</Text>
                     <Text style={styles.bookAuthor}>{item.author}</Text>
                     <Text style={styles.bookCategory}>{item.categories.join(', ')}</Text>
@@ -104,8 +111,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
-                    placeholder="Pesquisar livros
-          "
+                    placeholder="Pesquisar livros"
                     onChangeText={handleSearchInput}
                     value={searchTerm}
                 />
@@ -124,7 +130,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
             )}
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -180,9 +186,8 @@ const styles = StyleSheet.create({
         left: 100,
         right: 10,
         fontSize: 14,
-        color: '#EEE8AA',
+        color: '#baa53d',
     },
-
     loading: {
         flex: 1,
         justifyContent: 'center',
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
         width: 80,
         height: 120,
         marginRight: 10,
-        backgroundColor: '#F0FFF0'
+        backgroundColor: '#F0FFF0',
     },
     bookImage: {
         width: 80,
