@@ -46,7 +46,7 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
       } catch (error) {
         console.error('Error fetching book:', error);
       }
-    };    
+    };
 
     fetchBook();
   }, []);
@@ -63,7 +63,7 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
       await updateBook(updatedBook);
     }
   };
-  
+
   const handleReturn = async () => {
     setIsAvailable(true);
     const newReturnDate = moment().add(duration, 'days').toDate();
@@ -89,7 +89,7 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
     } catch (error) {
       console.error('Error updating book:', error);
     }
-  };  
+  };
 
 
   const getRemainingTime = () => {
@@ -100,13 +100,13 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
       const days = Math.floor(diff.asDays());
       const hours = Math.floor(diff.asHours() - days * 24);
       const minutes = Math.floor(diff.asMinutes() - days * 24 * 60 - hours * 60);
-  
+
       return `${days}d ${hours}h ${minutes}m`;
     }
-  
+
     return '';
   };
-  
+
 
   const openModal = () => {
     setShowModal(true);
