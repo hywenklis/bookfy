@@ -1,60 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
 import moment from 'moment';
-import books from '../data/books.json';
+import 'moment/locale/pt-br';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { doc, onSnapshot, updateDoc, getFirestore, Timestamp } from 'firebase/firestore';
 
-type BookDetailsScreenProps = {
+moment.locale('pt-br');
+
+interface Book {
+  id: string;
+  title: string;
+  author: string;
+  borrowed: boolean;
+  returnDate: Timestamp;
+}
+
+interface BookDetailsScreenProps {
   route: {
     params: {
-      book: {
-        id: string;
-        title: string;
-        author: string;
-        borrowed: boolean;
-        returnDate: string;
-      };
+      book: Book;
     };
   };
   navigation: any;
-};
+}
 
 const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation }) => {
   const { book } = route.params;
-  const currentBook = books.find((b) => b.id === book.id)!;
-  const [isAvailable, setIsAvailable] = useState(!currentBook.borrowed);
-  const [returnDate, setReturnDate] = useState<Date>(moment(currentBook.returnDate).toDate());
-  const remainingTime = moment(currentBook.returnDate).diff(moment());
-  const remainingDays = moment.duration(remainingTime).asDays();
-  const [duration, setDuration] = useState<number>(Math.ceil(remainingDays));
+  const [currentBook, setCurrentBook] = useState<Book | null>(null);
+  const [isAvailable, setIsAvailable] = useState(false);
+  const [returnDate, setReturnDate] = useState<string | null>(null);
+  const [duration, setDuration] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const handleBorrow = () => {
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(getFirestore(), 'books', book.id), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data() as Book;
+        setCurrentBook(data);
+        setIsAvailable(!data.borrowed);
+        setReturnDate(data.returnDate.toDate());
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleBorrow = async () => {
     setIsAvailable(false);
+    console.log('currentBook:', currentBook);
     const newReturnDate = moment().add(duration, 'days').toDate();
-    currentBook.borrowed = true;
-    currentBook.returnDate = newReturnDate;
-    setReturnDate(newReturnDate);
+    console.log('newReturnDate:', newReturnDate);
+    if (currentBook) {
+      const updatedBook: Book = {
+        ...currentBook,
+        borrowed: true,
+        returnDate: Timestamp.fromDate(newReturnDate),
+      };
+      console.log('updatedBook:', updatedBook);
+      try {
+        await updateBook(updatedBook, book.id);
+      } catch (error) {
+        console.error('Error updating book:', error);
+        throw error;
+      }
+    }
   };
 
-  const handleReturn = () => {
-    const newDate = moment().add(duration, 'days').toDate();
+  const handleReturn = async () => {
     setIsAvailable(true);
-    currentBook.borrowed = false;
-    currentBook.returnDate = newDate;
-    setDuration(0);
+    const newReturnDate = moment().add(duration, 'days').toDate();
+    if (currentBook) {
+      const updatedBook: Book = {
+        ...currentBook,
+        borrowed: false,
+        returnDate: Timestamp.fromDate(newReturnDate),
+      };
+      await updateBook(updatedBook, book.id);
+      closeModal();
+    }
   };
+
+  const updateBook = async (book: Book, bookId: string) => {
+    try {
+      const db = getFirestore();
+      const bookRef = doc(db, 'books', bookId);
+      await updateDoc(bookRef, {
+        borrowed: book.borrowed,
+        returnDate: book.returnDate,
+      });
+    } catch (error) {
+      console.error('Error updating book:', error);
+      throw error;
+    }
+  };
+
 
   const getRemainingTime = () => {
-    const now = moment();
-    const diff = moment.duration(moment(returnDate).diff(now));
-    const days = Math.floor(diff.asDays());
-    const hours = Math.floor(diff.asHours() - days * 24);
-    const minutes = Math.floor(diff.asMinutes() - days * 24 * 60 - hours * 60);
+    if (returnDate) {
+      const now = moment();
+      const returnDateTime = moment(returnDate, 'DD/MM/YYYY HH:mm:ss');
+      const diff = moment.duration(returnDateTime.diff(now));
+      const days = Math.floor(diff.asDays());
+      const hours = Math.floor(diff.asHours() - days * 24);
+      const minutes = Math.floor(diff.asMinutes() - days * 24 * 60 - hours * 60);
 
-    return `${days}d ${hours}h ${minutes}m`;
+      return `${days}d ${hours}h ${minutes}m`;
+    }
+
+    return '';
   };
+
 
   const openModal = () => {
     setShowModal(true);
@@ -68,10 +124,14 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
     setIsFavorite(!isFavorite);
   };
 
+  if (!currentBook) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {book.title}{' '}
+        {currentBook.title}{' '}
         <Icon
           name={isFavorite ? 'heart' : 'heart-o'}
           size={20}
@@ -96,7 +156,9 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
       ) : (
         <View style={styles.borrowed}>
           <Text style={styles.borrowedText}>EMPRESTADO</Text>
-          <Text style={styles.dateText}>Data de devolução: {moment(returnDate).format('DD/MM/YYYY HH:mm:ss')}</Text>
+          <Text style={styles.dateText}>
+            Data de devolução: {moment(returnDate).format('DD/MM/YYYY HH:mm:ss')}
+          </Text>
           <Text style={styles.remainingText}>Tempo restante: {getRemainingTime()}</Text>
           <TouchableOpacity style={styles.button} onPress={openModal}>
             <Text style={styles.buttonText}>DEVOLVER</Text>

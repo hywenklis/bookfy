@@ -2,134 +2,149 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
-import { Formik, FormikHelpers, Field } from 'formik';
+import { Formik, FormikHelpers, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import usersData from '../data/users.json';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 type SignupScreenProps = {
-    navigation: {
-        navigate: (screen: string) => void;
-    };
+  navigation: {
+    navigate: (screen: string) => void;
+  };
 };
 
 type FormValues = {
-    username: string;
-    password: string;
-    confirmPassword: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 };
 
 const LoginSchema = Yup.object().shape({
-    username: Yup.string().required('Campo obrigatório'),
-    password: Yup.string().required('Campo obrigatório'),
-    confirmPassword: Yup.string()
-        .required('Campo obrigatório')
-        .oneOf([Yup.ref('password')], 'As senhas não coincidem'),
+  email: Yup.string().required('Campo obrigatório'),
+  password: Yup.string().required('Campo obrigatório'),
+  confirmPassword: Yup.string()
+    .required('Campo obrigatório')
+    .oneOf([Yup.ref('password')], 'As senhas não coincidem'),
 });
 
+type FormikProps = {
+  handleSubmit: (values: FormValues, helpers: FormikHelpers<FormValues>) => void;
+};
+
+const SignupForm = ({ handleSubmit }: FormikProps) => {
+  return (
+    <Formik
+      initialValues={{ email: '', password: '', confirmPassword: '' }}
+      validationSchema={LoginSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        <View>
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="person" size={24} color="#c4c4c4" style={styles.inputIcon} />
+            <Field
+              component={TextInput}
+              style={styles.input}
+              placeholder="Email"
+              name="email"
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+              value={values.email}
+              autoCapitalize="none"
+              textContentType="email"
+            />
+          </View>
+          <ErrorMessage name="email" component={Text} style={styles.errorText} />
+
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
+            <Field
+              component={TextInput}
+              style={styles.input}
+              placeholder="Senha"
+              name="password"
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              value={values.password}
+              textContentType="password"
+              secureTextEntry
+            />
+          </View>
+          <ErrorMessage name="password" component={Text} style={styles.errorText} />
+
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
+            <Field
+              component={TextInput}
+              style={styles.input}
+              placeholder="Confirme sua Senha"
+              name="confirmPassword"
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={handleBlur('confirmPassword')}
+              value={values.confirmPassword}
+              textContentType="password"
+              secureTextEntry
+            />
+          </View>
+          <ErrorMessage name="confirmPassword" component={Text} style={styles.errorText} />
+
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Cadastrar</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </Formik>
+  );
+};
+
 const SignupScreen = ({ navigation }: SignupScreenProps) => {
-    const handleSignup = (values: FormValues, { resetForm }: FormikHelpers<FormValues>) => {
-        // verifica se o nome de usuário já existe
-        const userExists = usersData.users.some(
-            (user: { username: string }) => user.username === values.username
-        );
-        if (userExists) {
-            Alert.alert('Este nome de usuário já está em uso.');
-            return;
-        }
+  const handleSignup = async (values: FormValues, { resetForm }: FormikHelpers<FormValues>) => {
+    try {
+      const auth = getAuth();
 
-        // adiciona o novo usuário ao arquivo JSON
-        const newUser = {
-            username: values.username,
-            password: values.password,
-        };
-        usersData.users.push(newUser);
+      await createUserWithEmailAndPassword(auth, values.email, values.password);
 
-        // redireciona para a tela de login
-        Alert.alert('Cadastrado com sucesso!.');
-        resetForm();
-        navigation.navigate('Login');
-    };
+      Alert.alert('Cadastrado com sucesso!');
+      resetForm();
+      navigation.navigate('Login');
+    } catch (error: any) {
+      let errorMessage = 'Erro ao cadastrar usuário';
 
-    const handleLoginAccount = () => {
-        navigation.navigate('Login');
-      };
+      switch (error.code) {
+        case 'auth/weak-password':
+          errorMessage = 'A senha precisa ter no mínimo 6 caracteres.';
+          break;
+        case 'auth/email-already-in-use':
+          errorMessage = 'Este email já está em uso.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'O email informado é inválido.';
+          break;
+        default:
+          break;
+      }
 
-    return (
-        <Formik
-            initialValues={{ username: '', password: '', confirmPassword: '' }}
-            validationSchema={LoginSchema}
-            onSubmit={handleSignup}
-        >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                <View style={styles.container}>
-                    <Text style={styles.title}>Crie sua conta</Text>
-                    <View style={styles.form}>
-                        <View style={styles.inputContainer}>
-                            <MaterialIcons name="person" size={24} color="#c4c4c4" style={styles.inputIcon} />
-                            <Field
-                                component={TextInput}
-                                style={styles.input}
-                                placeholder="Usuário"
-                                name="username"
-                                onChangeText={handleChange('username')}
-                                onBlur={handleBlur('username')}
-                                value={values.username}
-                                autoCapitalize="none"
-                                textContentType="username"
-                            />
-                        </View>
-                        {touched.username && errors.username && (
-                            <Text style={styles.errorText}>{errors.username}</Text>
-                        )}
-                        <View style={styles.inputContainer}>
-                            <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
-                            <Field
-                                component={TextInput}
-                                style={styles.input}
-                                placeholder="Senha"
-                                name="password"
-                                onChangeText={handleChange('password')}
-                                onBlur={handleBlur('password')}
-                                value={values.password}
-                                textContentType="password"
-                                secureTextEntry
-                            />
-                        </View>
-                        {touched.password && errors.password && (
-                            <Text style={styles.errorText}>{errors.password}</Text>
-                        )}
-                        <View style={styles.inputContainer}>
-                            <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
-                            <Field
-                                component={TextInput}
-                                style={styles.input}
-                                placeholder="Confirme sua Senha"
-                                name="confirmPassword"
-                                onChangeText={handleChange('confirmPassword')}
-                                onBlur={handleBlur('confirmPassword')}
-                                value={values.confirmPassword}
-                                textContentType="password"
-                                secureTextEntry
-                            />
-                        </View>
-                        {touched.confirmPassword && errors.confirmPassword && (
-                            <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-                        )}
-                        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                            <Text style={styles.buttonText}>Cadastrar</Text>
-                        </TouchableOpacity>
-                        <View style={styles.loginAccountContainer}>
-                            <Text style={styles.loginAccountText}>Já possui conta?</Text>
-                            <TouchableOpacity onPress={handleLoginAccount}>
-                                <Text style={styles.loginAccountLink}>Clique aqui para entrar.</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            )
-            }
-        </Formik >
-    );
+      Alert.alert(errorMessage);
+    }
+  };
+
+  const handleLoginAccount = () => {
+    navigation.navigate('Login');
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Crie sua conta</Text>
+      <View style={styles.form}>
+        <SignupForm handleSubmit={handleSignup} />
+        <View style={styles.loginAccountContainer}>
+          <Text style={styles.loginAccountText}>Já possui conta?</Text>
+          <TouchableOpacity onPress={handleLoginAccount}>
+            <Text style={styles.loginAccountLink}>Clique aqui para entrar.</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
