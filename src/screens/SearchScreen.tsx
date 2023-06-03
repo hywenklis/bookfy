@@ -25,6 +25,8 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
     const [books, setBooks] = useState<Book[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
+
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -81,6 +83,12 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
 
     const handleSearch = () => {
         console.log(`Pesquisando por: ${searchTerm}`);
+        const filteredBooks = books.filter((book) => {
+            const titleLower = book.title.toLowerCase();
+            const searchTermLower = searchTerm.toLowerCase();
+            return titleLower.includes(searchTermLower);
+        });
+        setFilteredBooks(filteredBooks);
     };
 
     const handleBookPress = (book: Book) => {
@@ -123,10 +131,11 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
                 <ActivityIndicator style={styles.loading} />
             ) : (
                 <FlatList
-                    data={books}
+                    data={filteredBooks.length > 0 ? filteredBooks : books}
                     renderItem={renderBookItem}
                     keyExtractor={(item) => item.id}
                 />
+
             )}
         </View>
     );

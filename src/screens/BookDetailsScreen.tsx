@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
 import moment from 'moment';
+import 'moment/locale/pt-br';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { collection, doc, getDoc, getDocs, updateDoc, getFirestore, where, limit, query, Timestamp } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc, getFirestore, Timestamp } from 'firebase/firestore';
+
+moment.locale('pt-br');
 
 interface Book {
   id: string;
@@ -11,7 +14,6 @@ interface Book {
   borrowed: boolean;
   returnDate: Timestamp;
 }
-
 
 interface BookDetailsScreenProps {
   route: {
@@ -32,38 +34,39 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    const fetchBook = async () => {
-      try {
-        const db = getFirestore();
-        const bookRef = doc(db, 'books', book.id);
-        const docSnap = await getDoc(bookRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data() as Book;
-          setCurrentBook(data);
-          setIsAvailable(!data.borrowed);
-          setReturnDate(data.returnDate.toDate());
-        }
-      } catch (error) {
-        console.error('Error fetching book:', error);
+    const unsubscribe = onSnapshot(doc(getFirestore(), 'books', book.id), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data() as Book;
+        setCurrentBook(data);
+        setIsAvailable(!data.borrowed);
+        setReturnDate(data.returnDate.toDate());
       }
-    };    
+    });
 
-    fetchBook();
+    return () => unsubscribe();
   }, []);
 
   const handleBorrow = async () => {
     setIsAvailable(false);
+    console.log('currentBook:', currentBook);
     const newReturnDate = moment().add(duration, 'days').toDate();
+    console.log('newReturnDate:', newReturnDate);
     if (currentBook) {
       const updatedBook: Book = {
         ...currentBook,
         borrowed: true,
         returnDate: Timestamp.fromDate(newReturnDate),
       };
-      await updateBook(updatedBook);
+      console.log('updatedBook:', updatedBook);
+      try {
+        await updateBook(updatedBook, book.id);
+      } catch (error) {
+        console.error('Error updating book:', error);
+        throw error;
+      }
     }
   };
-  
+
   const handleReturn = async () => {
     setIsAvailable(true);
     const newReturnDate = moment().add(duration, 'days').toDate();
@@ -73,23 +76,24 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
         borrowed: false,
         returnDate: Timestamp.fromDate(newReturnDate),
       };
-      await updateBook(updatedBook, book.id); // Passa o ID do livro como argumento adicional
+      await updateBook(updatedBook, book.id);
       closeModal();
     }
   };
 
-  const updateBook = async (book: Book, bookId: string) => { // Recebe o ID do livro como argumento adicional
+  const updateBook = async (book: Book, bookId: string) => {
     try {
       const db = getFirestore();
-      const bookRef = doc(db, 'books', bookId); // Usa o ID do livro para criar a referência ao documento
+      const bookRef = doc(db, 'books', bookId);
       await updateDoc(bookRef, {
         borrowed: book.borrowed,
         returnDate: book.returnDate,
       });
     } catch (error) {
       console.error('Error updating book:', error);
+      throw error;
     }
-  };  
+  };
 
 
   const getRemainingTime = () => {
@@ -100,13 +104,13 @@ const BookDetailsScreen: React.FC<BookDetailsScreenProps> = ({ route, navigation
       const days = Math.floor(diff.asDays());
       const hours = Math.floor(diff.asHours() - days * 24);
       const minutes = Math.floor(diff.asMinutes() - days * 24 * 60 - hours * 60);
-  
+
       return `${days}d ${hours}h ${minutes}m`;
     }
-  
+
     return '';
   };
-  
+
 
   const openModal = () => {
     setShowModal(true);
