@@ -5,29 +5,28 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import * as LocalAuthentication from 'expo-local-authentication';
-import usersData from '../data/users.json';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 type LoginScreenProps = {
-  navigation: any;
+  navigation: {
+    navigate: (screen: string) => void;
+  };
 };
 
 const LoginSchema = Yup.object().shape({
-  username: Yup.string().required('Campo obrigatório'),
+  email: Yup.string().required('Campo obrigatório'),
   password: Yup.string().required('Campo obrigatório'),
 });
 
 const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogin = async ({ username, password }: { username: string; password: string }) => {
-    const user = usersData.users.find(
-      (user: { username: string; password: string }) =>
-        user.username === username && user.password === password
-    );
-
-    if (user) {
+  const handleLogin = async ({ email, password }: { email: string; password: string }) => {
+    try {
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, email, password);
       await handleAuthentication();
-    } else {
+    } catch (error) {
       Alert.alert('Nome de usuário ou senha incorretos.');
     }
   };
@@ -45,11 +44,19 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     });
 
     if (auth.success) {
-      setIsAuthenticated(true);
-      Alert.alert('Autenticado com sucesso.');
-      navigation.navigate('Books');
+      const authInstance = getAuth();
+      const user = authInstance.currentUser;
+
+      if (user) {
+        setIsAuthenticated(true);
+        Alert.alert('Autenticado com sucesso.');
+        navigation.navigate('Books');
+      } else {
+        Alert.alert('Falha na autenticação.');
+      }
     }
   }
+
 
   const handleCreateAccount = () => {
     navigation.navigate('Signup');
@@ -57,7 +64,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 
   return (
     <Formik
-      initialValues={{ username: '', password: '' }}
+      initialValues={{ email: '', password: '' }}
       validationSchema={LoginSchema}
       onSubmit={handleLogin}
     >
@@ -70,16 +77,16 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
               <Field
                 component={TextInput}
                 style={styles.input}
-                placeholder="Usuário"
-                name="username"
-                onChangeText={handleChange('username')}
-                onBlur={handleBlur('username')}
-                value={values.username}
+                placeholder="Email"
+                name="email"
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                value={values.email}
                 autoCapitalize="none"
-                textContentType="username"
+                textContentType="email"
               />
             </View>
-            {touched.username && errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+            {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
             <View style={styles.inputContainer}>
               <MaterialIcons name="lock" size={24} color="#c4c4c4" style={styles.inputIcon} />
               <Field

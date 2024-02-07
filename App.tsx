@@ -5,10 +5,17 @@ import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import SearchScreen from './src/screens/SearchScreen'
 import BookDetailsScreen from './src/screens/BookDetailsScreen';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from './src/config/firebase';
+import { getAnalytics } from "firebase/analytics";
 
 const Stack = createStackNavigator();
 
 const App = () => {
+
+  const app = initializeApp(firebaseConfig);
+  // const analytics = getAnalytics(app);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -37,10 +44,3 @@ const App = () => {
   );
 };
 export default App;
-
-
-
-
-
-
-
